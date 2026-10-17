@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="theme-color" content="#0a0e17">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Dashboard - Propuesta de Integración Estratégica: IA en la Educación</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0e17;
+            --bg-card: rgba(15, 23, 42, 0.85);
+            --bg-card-hover: rgba(20, 35, 60, 0.95);
+            --accent-cyan: #00d4ff;
+            --accent-cyan-intense: #00f0ff;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #ec4899;
+            --accent-green: #10b981;
+            --accent-orange: #f59e0b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-subtle: rgba(148, 163, 184, 0.1);
+            --border-glow: rgba(0, 212, 255, 0.3);
+            --shadow-3d: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Animated background particles */
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.2; }
+            25% { transform: translateY(-100px) translateX(50px); opacity: 0.5; }
+            50% { transform: translateY(-50px) translateX(-30px); opacity: 0.3; }
+            75% { transform: translateY(-150px) translateX(20px); opacity: 0.4; }
+        }
+
+        /* Grid lines background */
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Main container */
+        .dashboard-container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* ===== HEADER WITH LOGO ===== */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), var(--accent-purple), transparent);
+        }
+
+        /* Logo positioning - top left corner */
+        .logo-container {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .logo-container:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent-cyan-intense), var(--accent-cyan));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4), 0 4px 15px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+        }
+
+        .logo-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--bg-dark);
+        }
+
+        .logo-text {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--accent-cyan-intense);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(0, 240, 255, 0.5), 0 0 40px rgba(0, 240, 255, 0.2);
+            white-space: nowrap;
+        }
+
+        .logo-sub {
+            font-size: 0.65rem;
+            font-weight: 500;
+            color: var(--accent-cyan);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            opacity: 0.8;
+            margin-top: -3px;
+        }
+
+        .header h1 {
+            font-size: clamp(1.5rem, 4vw, 2.8rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+            padding-top: 10px;
+        }
+
+        .header .subtitle {
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
+            color: var(--text-secondary);
+            font-weight: 300;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* 3D Card base styles */
+        .card-3d {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .card-3d::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .card-3d::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 20px;
+            padding: 1px;
+            background: linear-gradient(135deg, transparent 40%, var(--border-glow) 50%, transparent 60%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s;
+            pointer-events: none;
+        }
+
+        .card-3d:hover {
+            transform: translateY(-8px) rotateX(2deg) rotateY(-2deg) scale(1.02);
+            box-shadow: 
+                var(--shadow-3d),
+                0 0 40px rgba(0, 212, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            border-color: var(--border-glow);
+            background: var(--bg-card-hover);
+        }
+
+        .card-3d:hover::after {
+            opacity: 1;
+        }
+
+        .card-3d:hover::before {
+            opacity: 1;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
+        }
+
+        /* Card header with collapse button */
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-subtle);
+            margin-bottom: 15px;
+            -webkit-user-select: none;
+        }
+
+        .card-header h2 {
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-primary);
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-header .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .icon-cyan { background: rgba(0, 212, 255, 0.15); color: var(--accent-cyan); }
+        .icon-purple { background: rgba(139, 92, 246, 0.15); color: var(--accent-purple); }
+        .icon-pink { background: rgba(236, 72, 153, 0.15); color: var(--accent-pink); }
+        .icon-green { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+        .icon-orange { background: rgba(245, 158, 11, 0.15); color: var(--accent-orange); }
+
+        .collapse-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            border: 1px solid var(--border-subtle);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .collapse-btn:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+            transform: rotate(90deg);
+        }
+
+        .collapse-btn.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .collapse-btn.collapsed:hover {
+            transform: rotate(-90deg) scale(1.1);
+        }
+
+        /* Collapsible content */
+        .card-content {
+            max-height: 3000px;
+            overflow: hidden;
+            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s;
+            opacity: 1;
+        }
+
+        .card-content.collapsed {
+            max-height: 0;
+            opacity: 0;
+        }
+
+        /* Subsection cards */
+        .subsection {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .subsection:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(0, 212, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .subsection h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subsection h3::before {
+            content: '▸';
+            color: var(--accent-purple);
+            font-size: 0.9rem;
+        }
+
+        .subsection p, .subsection li {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .subsection ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .subsection li {
+            padding: 6px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .subsection li::before {
+            content: '◆';
+            position: absolute;
+            left: 0;
+            color: var(--accent-purple);
+            font-size: 0.6rem;
+            top: 10px;
+        }
+
+        /* Grid layout */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        /* Roadmap timeline */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 25px;
+            padding-left: 25px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -26px;
+            top: 5px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--bg-dark);
+            border: 3px solid var(--accent-cyan);
+            box-shadow: 0 0 10px var(--accent-cyan);
+            transition: all 0.3s;
+        }
+
+        .timeline-item:hover::before {
+            transform: scale(1.3);
+            box-shadow: 0 0 20px var(--accent-cyan);
+        }
+
+        .timeline-item:nth-child(2)::before { border-color: var(--accent-purple); box-shadow: 0 0 10px var(--accent-purple); }
+        .timeline-item:nth-child(3)::before { border-color: var(--accent-pink); box-shadow: 0 0 10px var(--accent-pink); }
+
+        .timeline-item h4 {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .timeline-item .phase-tag {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .timeline-item:nth-child(2) .phase-tag { background: rgba(139, 92, 246, 0.1); color: var(--accent-purple); border-color: rgba(139, 92, 246, 0.2); }
+        .timeline-item:nth-child(3) .phase-tag { background: rgba(236, 72, 153, 0.1); color: var(--accent-pink); border-color: rgba(236, 72, 153, 0.2); }
+
+        /* Progress bars */
+        .progress-container {
+            margin: 15px 0;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Stats cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px) scale(1.03);
+            border-color: var(--border-glow);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.1);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Badge tags */
+        .badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .badge {
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 1px solid;
+            transition: all 0.3s;
+            cursor: default;
+        }
+
+        .badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .badge-cyan { background: rgba(0, 212, 255, 0.1); color: var(--accent-cyan); border-color: rgba(0, 212, 255, 0.3); }
+        .badge-purple { background: rgba(139, 92, 246, 0.1); color: var(--accent-purple); border-color: rgba(139, 92, 246, 0.3); }
+        .badge-pink { background: rgba(236, 72, 153, 0.1); color: var(--accent-pink); border-color: rgba(236, 72, 153, 0.3); }
+        .badge-green { background: rgba(16, 185, 129, 0.1); color: var(--accent-green); border-color: rgba(16, 185, 129, 0.3); }
+        .badge-orange { background: rgba(245, 158, 11, 0.1); color: var(--accent-orange); border-color: rgba(245, 158, 11, 0.3); }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            padding: 40px 20px 30px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 40px;
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .footer-brand .logo-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+        }
+
+        .footer-brand .logo-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .footer-brand-text {
+            text-align: left;
+        }
+
+        .footer-brand-text .logo-text {
+            font-size: 1.1rem;
+        }
+
+        .footer-brand-text .logo-sub {
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .footer-links a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .footer-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--accent-cyan);
+            transition: width 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-cyan-intense);
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+
+        .footer-links a:hover::after {
+            width: 100%;
+        }
+
+        .footer-divider {
+            color: var(--text-muted);
+            opacity: 0.4;
+        }
+
+        .footer-copyright {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+            opacity: 0.7;
+        }
+
+        .footer-copyright .copy-symbol {
+            color: var(--accent-cyan);
+            font-weight: 700;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 4px;
+        }
+
+        /* Entrance animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        /* Glow effect on hover for text */
+        .glow-text {
+            transition: text-shadow 0.3s;
+        }
+
+        .glow-text:hover {
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+
+        /* Connection lines between modules */
+        .module-connector {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 60px;
+            position: relative;
+        }
+
+        .module-connector::before {
+            content: '';
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--accent-cyan), var(--accent-purple));
+            opacity: 0.5;
+        }
+
+        .module-connector .arrow {
+            position: absolute;
+            color: var(--accent-purple);
+            font-size: 1.5rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(8px); }
+        }
+
+        /* ===== RESPONSIVE: iOS & Android ===== */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 10px;
+            }
+
+            /* Logo mobile adjustments */
+            .logo-container {
+                top: 10px;
+                left: 12px;
+                gap: 8px;
+            }
+
+            .logo-icon {
+                width: 36px;
+                height: 36px;
+                border-radius: 10px;
+            }
+
+            .logo-icon svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            .logo-text {
+                font-size: 1rem;
+                letter-spacing: 1px;
+            }
+
+            .logo-sub {
+                font-size: 0.55rem;
+                letter-spacing: 2px;
+            }
+
+            .header {
+                padding: 55px 15px 25px;
+                margin-bottom: 20px;
+            }
+
+            .header h1 {
+                font-size: clamp(1.2rem, 5vw, 1.8rem);
+                padding-top: 5px;
+            }
+
+            .card-3d {
+                padding: 18px;
+                margin-bottom: 15px;
+                border-radius: 16px;
+            }
+
+            .card-3d:hover {
+                transform: translateY(-4px) scale(1.01);
+            }
+
+            .card-header h2 {
+                font-size: 1rem;
+                gap: 8px;
+            }
+
+            .card-header .icon {
+                width: 34px;
+                height: 34px;
+                font-size: 1.1rem;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+
+            .subsection {
+                padding: 15px;
+            }
+
+            .timeline {
+                padding-left: 20px;
+            }
+
+            .timeline-item {
+                padding-left: 18px;
+            }
+
+            .timeline-item::before {
+                left: -22px;
+                width: 11px;
+                height: 11px;
+            }
+
+            /* Footer mobile */
+            .footer {
+                padding: 30px 15px 25px;
+                margin-top: 30px;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .footer-divider {
+                display: none;
+            }
+
+            .footer-brand .logo-icon {
+                width: 32px;
+                height: 32px;
+            }
+
+            .footer-brand-text .logo-text {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo-container {
+                top: 8px;
+                left: 10px;
+            }
+
+            .logo-icon {
+                width: 32px;
+                height: 32px;
+                border-radius: 8px;
+            }
+
+            .logo-icon svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            .logo-text {
+                font-size: 0.85rem;
+                letter-spacing: 0.5px;
+            }
+
+            .logo-sub {
+                font-size: 0.5rem;
+                letter-spacing: 1.5px;
+            }
+
+            .header {
+                padding: 50px 10px 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+
+            .stat-card {
+                padding: 15px 8px;
+            }
+
+            .stat-number {
+                font-size: 1.3rem;
+            }
+
+            .stat-label {
+                font-size: 0.7rem;
+            }
+
+            .badge-container {
+                gap: 5px;
+            }
+
+            .badge {
+                padding: 4px 10px;
+                font-size: 0.75rem;
+            }
+
+            .footer-brand-text .logo-text {
+                font-size: 0.9rem;
+            }
+
+            .footer-copyright {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* iOS specific fixes */
+        @supports (-webkit-touch-callout: none) {
+            .card-3d {
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+            }
+
+            .card-3d:hover {
+                -webkit-transform: translateY(-4px) scale(1.01);
+            }
+        }
+
+        /* Android specific fixes */
+        @media screen and (max-width: 768px) and (-webkit-min-device-pixel-ratio: 2) {
+            .card-3d {
+                transform: none !important;
+            }
+
+            .card-3d:active {
+                transform: scale(0.98) !important;
+                transition: transform 0.1s;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background effects -->
+    <div class="grid-bg"></div>
+    <div class="bg-particles" id="particles"></div>
+
+    <div class="dashboard-container">
+        <!-- ===== HEADER WITH LOGO ===== -->
+        <header class="header animate-in" style="animation-delay: 0.1s;">
+            <!-- Logo: extremo superior izquierdo, Cian Intenso -->
+            <a href="https://www.dataflowia.com" target="_blank" class="logo-container" aria-label="DATAFLOW IA">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="logo-text">DATAFLOW IA</div>
+                    <div class="logo-sub">Inteligencia Artificial</div>
+                </div>
+            </a>
+
+            <h1>Propuesta de Integración Estratégica</h1>
+            <p class="subtitle">La Escuela en la Era de la Inteligencia Artificial — Un Modelo de Transformación Pedagógica y Competencial para Docentes y Estudiantes</p>
+        </header>
+
+        <!-- Stats Overview -->
+        <div class="stats-grid animate-in" style="animation-delay: 0.2s;">
+            <div class="stat-card">
+                <div class="stat-number">2</div>
+                <div class="stat-label">Módulos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">5</div>
+                <div class="stat-label">Dimensiones UNESCO</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">4</div>
+                <div class="stat-label">Dimensiones AILit</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">12</div>
+                <div class="stat-label">Meses Roadmap</div>
+            </div>
+        </div>
+
+        <!-- Introduction Card -->
+        <div class="card-3d animate-in" style="animation-delay: 0.3s;">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h2><span class="icon icon-cyan">📖</span> Introducción y Fundamentación Estratégica</h2>
+                <button class="collapse-btn">−</button>
+            </div>
+            <div class="card-content">
+                <p style="color: var(--text-secondary); margin-bottom: 15px;">
+                    En el panorama educativo global, la Inteligencia Artificial (IA) ha dejado de ser una herramienta complementaria para convertirse en un <strong style="color: var(--accent-cyan);">agente catalizador del aprendizaje</strong>. De acuerdo con las directrices más recientes de la UNESCO y de la OCDE, la integración de la IA en los colegios no debe centrarse únicamente en la adquisición de tecnología, sino en la evolución de la relación pedagógica tradicional hacia un entorno dinámico y tripartito:
+                </p>
+                <div class="badge-container">
+                    <span class="badge badge-cyan">👨‍🏫 Docente</span>
+                    <span class="badge badge-purple">🤖 IA</span>
+                    <span class="badge badge-pink">🎓 Estudiante</span>
+                </div>
+                <p style="color: var(--text-secondary); margin-top: 15px;">
+                    Esta propuesta presenta un plan estructurado en <strong style="color: var(--accent-green);">dos módulos interconectados</strong>. Su objetivo es posicionar a su institución educativa a la vanguardia de la innovación metodológica, garantizando un uso seguro, ético, crítico y de alto impacto académico de estas tecnologías.
+                </p>
+            </div>
+        </div>
+
+        <!-- Module 1 -->
+        <div class="card-3d animate-in" style="animation-delay: 0.4s;">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h2><span class="icon icon-purple">🎓</span> MÓDULO 1: Capacitación, Competencias y Empoderamiento del Cuerpo Docente</h2>
+                <button class="collapse-btn">−</button>
+            </div>
+            <div class="card-content">
+                <p style="color: var(--text-secondary); margin-bottom: 20px; font-style: italic;">
+                    La evolución del rol docente en el ecosistema "Docente-IA-Estudiante"
+                </p>
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                    Este módulo se fundamenta de forma directa en el <strong>Marco de Competencias en IA para Docentes de la UNESCO (2024, con actualizaciones de 2026)</strong> y en las <strong>Directrices Éticas de la Comisión Europea</strong> sobre el uso de la IA y los datos en la enseñanza y el aprendizaje (2026). No buscamos que el docente sea un mero programador, sino el <strong style="color: var(--accent-cyan);">guardián ético y el facilitador metodológico</strong> de esta tecnología.
+                </p>
+
+                <div class="subsection">
+                    <h3>A. Enfoque Pedagógico del Módulo</h3>
+                    <p>La capacitación docente se orienta bajo un enfoque de <strong>Desarrollo Competencial Progresivo</strong>, estructurado en tres niveles metodológicos:</p>
+                    <ul style="margin-top: 10px;">
+                        <li><strong style="color: var(--accent-cyan);">Adquisición (Acquire):</strong> Comprender el funcionamiento básico de los modelos de lenguaje (LLM), visión computacional e IA generativa, entendiendo tanto sus capacidades como sus limitaciones intrínsecas (sesgos cognitivos, alucinaciones).</li>
+                        <li><strong style="color: var(--accent-purple);">Profundización (Deepen):</strong> Integrar la IA en el diseño de planes de clase, diversificación curricular y evaluación auténtica formativa.</li>
+                        <li><strong style="color: var(--accent-pink);">Creación (Create):</strong> Diseñar entornos de aprendizaje innovadores y personalizados, colaborando con sistemas inteligentes para atender las necesidades individuales de cada estudiante en tiempo real.</li>
+                    </ul>
+                </div>
+
+                <div class="subsection">
+                    <h3>B. Áreas Clave de Competencia y Desarrollo</h3>
+                    <p>Para asegurar un estándar profesional y riguroso, la formación docente abordará <strong>cinco dimensiones esenciales</strong> definidas por la UNESCO:</p>
+                    <ul style="margin-top: 10px;">
+                        <li><strong>Mentalidad Centrada en el Ser Humano:</strong> Garantizar que la IA apoye la labor del profesor en lugar de sustituirla, potenciando la empatía, el pensamiento crítico y el bienestar socioemocional del estudiante.</li>
+                        <li><strong>Ética de la IA:</strong> Gestión activa de la privacidad de los datos (GDPR, leyes locales), detección de sesgos culturales/de género, y derechos de autor de contenidos sintéticos.</li>
+                        <li><strong>Fundamentos y Aplicaciones Técnicas:</strong> Comprensión práctica de herramientas de IA generativa de texto, imagen, voz y automatización de flujos de trabajo administrativos.</li>
+                        <li><strong>Pedagogía con IA:</strong> Rediseño del currículo para incorporar metodologías activas (Aprendizaje Basado en Proyectos asistido por IA) y co-creación de rúbricas dinámicas.</li>
+                        <li><strong>IA para el Aprendizaje Profesional:</strong> Uso de la tecnología para la autoformación docente y colaboración entre pares a través de comunidades virtuales de práctica.</li>
+                    </ul>
+                </div>
+
+                <div class="subsection">
+                    <h3>C. Especificaciones y Detalles Técnicos para el Aula Docente</h3>
+                    <ul>
+                        <li><strong style="color: var(--accent-cyan);">Ingeniería de Prompts Educativos:</strong> Capacitación en Few-Shot Prompting y Chain-of-Thought (CoT) para generar materiales didácticos, adaptar textos a diferentes niveles de lectura y redactar evaluaciones.</li>
+                        <li><strong style="color: var(--accent-purple);">Evaluación Formativa Apoyada por IA:</strong> Implementación de Feedback Loop Automation con agentes personalizados de IA y plataformas tipo Edpuzzle con IA para retroalimentación personalizada a gran escala.</li>
+                        <li><strong style="color: var(--accent-pink);">Protección y Gobernanza de Datos:</strong> Definición de protocolos de uso seguro. Los docentes aprenderán a no introducir datos sensibles, nombres de pila o registros escolares privados en herramientas de IA públicas.</li>
+                    </ul>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-label"><span>Progreso del Módulo 1</span><span>100%</span></div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 100%;"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Connector -->
+        <div class="module-connector animate-in" style="animation-delay: 0.5s;">
+            <span class="arrow">⬇</span>
+        </div>
+
+        <!-- Module 2 -->
+        <div class="card-3d animate-in" style="animation-delay: 0.6s;">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h2><span class="icon icon-pink">🧠</span> MÓDULO 2: Desarrollo del Alfabetismo en IA (AI Literacy) para Alumnos</h2>
+                <button class="collapse-btn">−</button>
+            </div>
+            <div class="card-content">
+                <p style="color: var(--text-secondary); margin-bottom: 20px; font-style: italic;">
+                    Preparando a los líderes digitales del futuro a través del marco europeo/OCDE
+                </p>
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                    Este módulo está alineado directamente con el nuevo borrador y publicación de la Comisión Europea y la OCDE: <strong>"Empowering Learners for the Age of AI: An AI Literacy Framework for Primary and Secondary Education"</strong> (AILit Framework, 2025/2026). La alfabetización en IA va más allá del uso de herramientas; se trata de una <strong style="color: var(--accent-cyan);">competencia cívica y cognitiva fundamental</strong> para el siglo XXI.
+                </p>
+
+                <div class="subsection">
+                    <h3>A. Enfoque Pedagógico del Módulo</h3>
+                    <p>El marco de aprendizaje se diseña bajo un enfoque de <strong>Agencia de Aprendizaje Crítica y Activa</strong>, estructurado mediante cuatro dimensiones de interacción:</p>
+                    <div class="grid-2" style="margin-top: 15px;">
+                        <div class="subsection" style="margin-bottom: 0;">
+                            <h3 style="color: var(--accent-cyan);">🤝 Interactuar (Engage)</h3>
+                            <p>Aprender a utilizar sistemas de IA de manera cotidiana, eficiente y con propósitos académicos claros.</p>
+                        </div>
+                        <div class="subsection" style="margin-bottom: 0;">
+                            <h3 style="color: var(--accent-purple);">✨ Crear con IA (Create with)</h3>
+                            <p>Utilizar la IA como socio de co-diseño en proyectos artísticos, científicos y literarios, potenciando la creatividad guiada.</p>
+                        </div>
+                        <div class="subsection" style="margin-bottom: 0;">
+                            <h3 style="color: var(--accent-pink);">⚖️ Gestionar IA (Manage)</h3>
+                            <p>Evaluar críticamente los riesgos de los sistemas inteligentes (cámaras de eco, desinformación, manipulación de algoritmos) y tomar decisiones informadas.</p>
+                        </div>
+                        <div class="subsection" style="margin-bottom: 0;">
+                            <h3 style="color: var(--accent-green);">🔧 Diseñar IA (Design)</h3>
+                            <p>Introducir de manera progresiva los principios de la programación y el entrenamiento de modelos sencillos de Machine Learning.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>B. Competencias Transversales a Desarrollar (K-12)</h3>
+                    <ul>
+                        <li><strong>Pensamiento Crítico frente al Contenido Generado por IA:</strong> El estudiante no asume la respuesta de la IA como verdad absoluta. Aprende a contrastar fuentes y a identificar alucinaciones de los LLM.</li>
+                        <li><strong>Pensamiento Computacional y Descomposición de Problemas:</strong> Dividir problemas complejos en partes lógicas para dar instrucciones precisas y estructuradas a sistemas automatizados.</li>
+                        <li><strong>Colaboración Humano-Máquina:</strong> Trabajar en proyectos combinando las fortalezas analíticas de la IA con la creatividad y el juicio ético del ser humano.</li>
+                        <li><strong>Consciencia Social y Autoconocimiento:</strong> Comprender el impacto medioambiental del procesamiento de grandes modelos de IA y evaluar cómo la tecnología influye en sus hábitos digitales.</li>
+                    </ul>
+                </div>
+
+                <div class="subsection">
+                    <h3>C. Especificaciones y Detalles Técnicos por Niveles</h3>
+                    <div class="grid-2">
+                        <div class="subsection" style="border-left: 3px solid var(--accent-cyan);">
+                            <h3 style="color: var(--accent-cyan);">📚 Educación Primaria (Básica)</h3>
+                            <p><strong>Herramientas:</strong> Plataformas gamificadas de programación visual (Scratch + Machine Learning for Kids).</p>
+                            <p style="margin-top: 8px;"><strong>Objetivo:</strong> Los alumnos entrenan modelos visuales sencillos (clasificación de imágenes de frutas o emociones) para entender el concepto de "entrenamiento de datos" y "sesgo de datos".</p>
+                        </div>
+                        <div class="subsection" style="border-left: 3px solid var(--accent-purple);">
+                            <h3 style="color: var(--accent-purple);">🔬 Educación Secundaria (Media)</h3>
+                            <p><strong>Herramientas:</strong> Interfaces de baja codificación, notebooks interactivos de Python y herramientas de curación de datos (Hugging Face Spaces, Google/Microsoft).</p>
+                            <p style="margin-top: 8px;"><strong>Objetivo:</strong> Desarrollar proyectos de impacto social utilizando IA (análisis de datos climáticos, modelos de predicción de tráfico escolar), aplicando fases completas de diseño de IA.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-label"><span>Progreso del Módulo 2</span><span>100%</span></div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 100%;"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Roadmap -->
+        <div class="card-3d animate-in" style="animation-delay: 0.7s;">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h2><span class="icon icon-green">🗺️</span> Hoja de Ruta Sugerida para la Inserción Comercial (Roadmap)</h2>
+                <button class="collapse-btn">−</button>
+            </div>
+            <div class="card-content">
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                    Para garantizar un proceso de adopción suave, exitoso y comercialmente viable, proponemos una implementación dividida en <strong>tres etapas estratégicas</strong>:
+                </p>
+
+                <div style="display: flex; justify-content: center; margin-bottom: 25px;">
+                    <div class="badge-container">
+                        <span class="badge badge-cyan">Fase 1: Diagnóstico y Gobernanza</span>
+                        <span style="color: var(--text-muted); align-self: center;">→</span>
+                        <span class="badge badge-purple">Fase 2: Capacitación y Pilotos</span>
+                        <span style="color: var(--text-muted); align-self: center;">→</span>
+                        <span class="badge badge-pink">Fase 3: Escalado y Evaluación</span>
+                    </div>
+                </div>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <span class="phase-tag">Meses 1-2</span>
+                        <h4>Fase 1: Diagnóstico y Políticas de Uso Aceptable</h4>
+                        <ul>
+                            <li>Auditoría de infraestructura tecnológica del colegio.</li>
+                            <li>Creación del "Comité de Ética y Tecnología" del colegio.</li>
+                            <li>Redacción de la Política de IA Institucional para apoderados, alumnos y docentes.</li>
+                        </ul>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="phase-tag">Meses 3-5</span>
+                        <h4>Fase 2: Capacitación Docente y Proyectos Piloto</h4>
+                        <ul>
+                            <li>Despliegue del Módulo 1 con líderes de departamento y profesores con perfil innovador.</li>
+                            <li>Ejecución de un programa piloto de alfabetización en IA (Módulo 2) en niveles seleccionados de primaria y secundaria.</li>
+                        </ul>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="phase-tag">Meses 6-12</span>
+                        <h4>Fase 3: Escalabilidad e Integración Curricular Completa</h4>
+                        <ul>
+                            <li>Formación extensiva a todo el profesorado.</li>
+                            <li>Actualización de los planes de estudio por asignatura para incorporar competencias de IA.</li>
+                            <li>Evaluación continua del impacto pedagógico mediante métricas de rendimiento y encuestas de satisfacción.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Frameworks & Standards -->
+        <div class="card-3d animate-in" style="animation-delay: 0.8s;">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h2><span class="icon icon-orange">📋</span> Marcos de Referencia y Estándares</h2>
+                <button class="collapse-btn">−</button>
+            </div>
+            <div class="card-content">
+                <div class="grid-2">
+                    <div class="subsection">
+                        <h3>UNESCO (2024-2026)</h3>
+                        <p>Marco de Competencias en IA para Docentes — Actualizaciones recientes sobre integración ética y pedagógica de la IA en el aula.</p>
+                    </div>
+                    <div class="subsection">
+                        <h3>Comisión Europea (2026)</h3>
+                        <p>Directrices Éticas sobre el uso de la IA y los datos en la enseñanza y el aprendizaje — Marco regulatorio para protección de datos y privacidad.</p>
+                    </div>
+                    <div class="subsection">
+                        <h3>OCDE / AILit Framework (2025/2026)</h3>
+                        <p>"Empowering Learners for the Age of AI: An AI Literacy Framework for Primary and Secondary Education" — Alfabetización en IA como competencia cívica fundamental.</p>
+                    </div>
+                    <div class="subsection">
+                        <h3>GDPR de la UE</h3>
+                        <p>Reglamento General de Protección de Datos — Alineación con legislaciones locales de protección de datos personales en entornos educativos.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <div class="footer animate-in" style="animation-delay: 0.9s;">
+            <!-- Logo brand in footer -->
+            <div class="footer-brand">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <div class="footer-brand-text">
+                    <div class="logo-text">DATAFLOW IA</div>
+                    <div class="logo-sub">Inteligencia Artificial</div>
+                </div>
+            </div>
+
+            <!-- Links -->
+            <div class="footer-links">
+                <a href="https://www.dataflowia.com" target="_blank" rel="noopener">www.dataflowia.com</a>
+                <span class="footer-divider">|</span>
+                <a href="mailto:contacto@dataflowia.com">contacto@dataflowia.com</a>
+            </div>
+
+            <!-- Copyright -->
+            <div class="footer-copyright">
+                <span class="copy-symbol">©</span> 2026 Todos los derechos reservados
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate background particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = window.innerWidth < 768 ? 12 : 25;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+
+                const colors = ['#00d4ff', '#8b5cf6', '#ec4899', '#10b981'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.width = (2 + Math.random() * 4) + 'px';
+                particle.style.height = particle.style.width;
+
+                container.appendChild(particle);
+            }
+        }
+
+        // Toggle card collapse
+        function toggleCard(header) {
+            const card = header.parentElement;
+            const content = card.querySelector('.card-content');
+            const btn = header.querySelector('.collapse-btn');
+
+            content.classList.toggle('collapsed');
+            btn.classList.toggle('collapsed');
+            btn.textContent = content.classList.contains('collapsed') ? '+' : '−';
+        }
+
+        // 3D tilt effect on mouse move (desktop only)
+        function init3DTilt() {
+            if (window.matchMedia('(pointer: coarse)').matches) return; // Skip on touch devices
+
+            const cards = document.querySelectorAll('.card-3d');
+
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+
+                    const rotateX = (y - centerY) / 30;
+                    const rotateY = (centerX - x) / 30;
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px) scale(1.02)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = '';
+                });
+            });
+        }
+
+        // Intersection Observer for entrance animations
+        function initScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.animate-in').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // Animate progress bars on scroll
+        function initProgressBars() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const fills = entry.target.querySelectorAll('.progress-fill');
+                        fills.forEach(fill => {
+                            const width = fill.style.width;
+                            fill.style.width = '0%';
+                            setTimeout(() => {
+                                fill.style.width = width;
+                            }, 200);
+                        });
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            document.querySelectorAll('.progress-container').forEach(bar => {
+                observer.observe(bar.parentElement);
+            });
+        }
+
+        // Touch handling for mobile cards
+        function initTouchCards() {
+            const cards = document.querySelectorAll('.card-3d');
+            cards.forEach(card => {
+                card.addEventListener('touchstart', () => {
+                    card.style.transform = 'scale(0.98)';
+                }, { passive: true });
+
+                card.addEventListener('touchend', () => {
+                    card.style.transform = '';
+                }, { passive: true });
+            });
+        }
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            init3DTilt();
+            initScrollAnimations();
+            initProgressBars();
+            initTouchCards();
+        });
+
+        // Re-init on resize
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                document.getElementById('particles').innerHTML = '';
+                createParticles();
+            }, 250);
+        });
+    </script>
+</body>
+</html>
